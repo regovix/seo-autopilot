@@ -1,0 +1,16 @@
+{
+  "name": "regovix-seo-autopilot",
+  "version": "1.0.0",
+  "description": "AI-powered SEO content autopilot for Madram Milsan AI & Regovix",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step needed for static + functions'"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

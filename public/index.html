@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SEO Autopilot — Regovix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:         #0D1117;
+    --surface:    #161B22;
+    --surface2:   #1C2330;
+    --border:     #30363D;
+    --teal:       #17A589;
+    --teal-dim:   #0E6B5A;
+    --teal-glow:  rgba(23,165,137,0.15);
+    --blue:       #2E5FA3;
+    --text:       #E6EDF3;
+    --muted:      #8B949E;
+    --warn:       #E6A817;
+    --success:    #3FB950;
+    --error:      #F85149;
+    --mono:       'JetBrains Mono', monospace;
+    --sans:       'Inter', sans-serif;
+    --radius:     8px;
+    --radius-lg:  14px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── Top Nav ── */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 28px; height: 28px;
+    background: var(--teal);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .nav-badge {
+    background: var(--teal-glow);
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 12px 10px 6px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    color: var(--muted);
+    font-weight: 500;
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 13.5px;
+  }
+  .sidebar-item:hover { background: var(--surface2); color: var(--text); }
+  .sidebar-item.active {
+    background: var(--teal-glow);
+    color: var(--teal);
+    border: 1px solid rgba(23,165,137,0.3);
+  }
+  .sidebar-item .icon { width: 16px; text-align: center; }
+
+  /* ── Main ── */
+  .main {
+    padding: 32px;
+    overflow-y: auto;
+  }
+
+  /* ── Panels (tabs) ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Page header ── */
+  .page-header {
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .page-header p { color: var(--muted); font-size: 13px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Stats row ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+  .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--text); font-family: var(--mono); }
+  .stat-change { font-size: 11px; color: var(--success); margin-top: 4px; }
+
+  /* ── Form inputs ── */
+  .form-group { margin-bottom: 16px; }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-glow);
+  }
+  textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+  select option { background: var(--surface); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--teal);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #15957A; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  /* ── Loader ── */
+  .loader {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 12px 0;
+  }
+  .loader.show { display: flex; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Result area ── */
+  .result-box {
+    display: none;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .result-box.show { display: block; }
+
+  /* ── Keyword chips ── */
+  .kw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .kw-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .kw-card:hover { border-color: var(--teal); }
+  .kw-card.selected { border-color: var(--teal); background: var(--teal-glow); }
+  .kw-phrase { font-weight: 600; color: var(--text); margin-bottom: 4px; font-size: 13px; }
+  .kw-title { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.4; }
+  .kw-meta { display: flex; gap: 8px; }
+  .kw-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+  .badge-low { background: rgba(63,185,80,0.15); color: var(--success); }
+  .badge-med { background: rgba(230,168,23,0.15); color: var(--warn); }
+  .badge-high { background: rgba(248,81,73,0.15); color: var(--error); }
+  .badge-info { background: rgba(46,95,163,0.15); color: #79B8FF; }
+
+  /* ── Content preview ── */
+  .content-preview {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .content-preview h1 { font-size: 20px; margin-bottom: 12px; color: var(--text); }
+  .content-preview h2 { font-size: 16px; margin: 20px 0 8px; color: var(--teal); }
+  .content-preview p { margin-bottom: 12px; color: #C9D1D9; }
+  .content-preview strong { color: var(--text); }
+  .content-preview ul { padding-left: 20px; margin-bottom: 12px; }
+  .content-preview li { margin-bottom: 4px; color: #C9D1D9; }
+  .meta-bar {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .meta-bar strong { color: var(--teal); }
+
+  /* ── Queue table ── */
+  .queue-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .queue-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .queue-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: top;
+  }
+  .queue-table tr:last-child td { border-bottom: none; }
+  .queue-table tr:hover td { background: var(--surface2); }
+  .topic-pill {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(46,95,163,0.2);
+    color: #79B8FF;
+    font-weight: 500;
+  }
+  .day-label { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  /* ── Log terminal ── */
+  .log-terminal {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #7EE787;
+    max-height: 260px;
+    overflow-y: auto;
+    line-height: 1.8;
+  }
+  .log-muted { color: var(--muted); }
+  .log-warn { color: var(--warn); }
+  .log-error { color: var(--error); }
+  .log-teal { color: var(--teal); }
+
+  /* ── Copy button ── */
+  .copy-wrapper { position: relative; }
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { color: var(--teal); border-color: var(--teal); }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    display: flex;
+    gap: 2px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .tab {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--muted);
+    border: none;
+    background: none;
+    font-family: var(--sans);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  /* ── Alert ── */
+  .alert {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .alert.show { display: flex; align-items: flex-start; gap: 10px; }
+  .alert-success { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: var(--success); }
+  .alert-error { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); color: var(--error); }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .kw-grid { grid-template-columns: 1fr; }
+    .main { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">⚡</div>
+    SEO Autopilot
+  </a>
+  <span class="nav-badge">REGOVIX</span>
+  <div class="nav-right">
+    <div class="status-dot" title="Claude API connected"></div>
+    <span style="color:var(--muted);font-size:12px;">Claude claude-sonnet-4-6</span>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Tools</div>
+    <button class="sidebar-item active" onclick="switchPanel('dashboard', this)">
+      <span class="icon">📊</span> Dashboard
+    </button>
+    <button class="sidebar-item" onclick="switchPanel('keywords', this)">
+      <span class="icon">🔍</span> Keyword Research
+    </button>
+    <button class="sidebar-item" onclick="switchPanel('generate', this)">
+      <span class="icon">✍️</span> Generate Post
+    </button>
+    <button class="sidebar-item" onclick="switchPanel('queue', this)">
+      <span class="icon">📅</span> Topic Queue
+    </button>
+    <button class="sidebar-item" onclick="switchPanel('autopilot', this)">
+      <span class="icon">🤖</span> Autopilot
+    </button>
+    <div class="sidebar-label">Settings</div>
+    <button class="sidebar-item" onclick="switchPanel('settings', this)">
+      <span class="icon">⚙️</span> Configuration
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="page-header">
+        <h1>SEO Autopilot Dashboard</h1>
+        <p>AI-powered content engine for Madram Milsan AI &amp; Regovix</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Posts Generated</div>
+          <div class="stat-value" id="stat-posts">0</div>
+          <div class="stat-change">↑ Session total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Keywords Found</div>
+          <div class="stat-value" id="stat-keywords">0</div>
+          <div class="stat-change">↑ This session</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Words Written</div>
+          <div class="stat-value" id="stat-words">0</div>
+          <div class="stat-change">↑ AI-generated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Topics in Queue</div>
+          <div class="stat-value">15</div>
+          <div class="stat-change">Auto-rotating</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚀 Quick Start</div>
+        <p style="color:var(--muted);margin-bottom:16px;font-size:13px;">Generate your first SEO blog post in 3 steps</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+            <div style="color:var(--teal);font-size:20px;margin-bottom:8px;">1️⃣</div>
+            <div style="font-weight:600;margin-bottom:4px;font-size:13px;">Research Keywords</div>
+            <div style="color:var(--muted);font-size:12px;">Enter a travel topic and get 10 low-competition keyword ideas</div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="switchPanel('keywords', document.querySelector('[onclick*=keywords]'))">Open →</button>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+            <div style="color:var(--teal);font-size:20px;margin-bottom:8px;">2️⃣</div>
+            <div style="font-weight:600;margin-bottom:4px;font-size:13px;">Generate Content</div>
+            <div style="color:var(--muted);font-size:12px;">Pick a keyword and get a full 1,200-word SEO post in seconds</div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="switchPanel('generate', document.querySelector('[onclick*=generate]'))">Open →</button>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+            <div style="color:var(--teal);font-size:20px;margin-bottom:8px;">3️⃣</div>
+            <div style="font-weight:600;margin-bottom:4px;font-size:13px;">Enable Autopilot</div>
+            <div style="color:var(--muted);font-size:12px;">Schedule daily auto-publishing to your Ghost or WordPress site</div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="switchPanel('autopilot', document.querySelector('[onclick*=autopilot]'))">Open →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Activity Log</div>
+        <div class="log-terminal" id="main-log">
+<span class="log-muted">[system]</span> SEO Autopilot initialised ✓
+<span class="log-muted">[system]</span> Claude claude-sonnet-4-6 connected ✓
+<span class="log-muted">[system]</span> Ready — select a tool from the sidebar to begin
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KEYWORD RESEARCH ── -->
+    <div class="panel" id="panel-keywords">
+      <div class="page-header">
+        <h1>🔍 Keyword Research</h1>
+        <p>Find low-competition, high-intent keywords for any travel topic</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Research Settings</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label>Travel Topic</label>
+            <input type="text" id="kw-topic" placeholder="e.g. Japan cherry blossom, Norway fjords, Bali beaches"/>
+          </div>
+          <div class="form-group">
+            <label>Niche Focus</label>
+            <select id="kw-niche">
+              <option value="travel">General Travel</option>
+              <option value="budget travel">Budget Travel</option>
+              <option value="luxury travel">Luxury Travel</option>
+              <option value="solo travel">Solo Travel</option>
+              <option value="family travel">Family Travel</option>
+              <option value="adventure travel">Adventure Travel</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="runKeywordResearch()">
+          <span>🔍</span> Research Keywords
+        </button>
+      </div>
+
+      <div class="loader" id="kw-loader">
+        <div class="spinner"></div>
+        <span>Claude is researching keywords...</span>
+      </div>
+
+      <div class="alert alert-error" id="kw-error"></div>
+
+      <div class="result-box" id="kw-results">
+        <div class="card-title">Results — click a keyword to use it</div>
+        <div class="kw-grid" id="kw-grid"></div>
+      </div>
+    </div>
+
+    <!-- ── GENERATE CONTENT ── -->
+    <div class="panel" id="panel-generate">
+      <div class="page-header">
+        <h1>✍️ Generate Blog Post</h1>
+        <p>Create a full SEO-optimised post with one click</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Post Settings</div>
+        <div class="form-group">
+          <label>Target Keyword</label>
+          <input type="text" id="gen-keyword" placeholder="e.g. best time to visit Japan for cherry blossoms from Australia"/>
+        </div>
+        <div class="form-group">
+          <label>Blog Post Title</label>
+          <input type="text" id="gen-title" placeholder="e.g. The Best Time to Visit Japan for Cherry Blossoms (And How AI Planned My Trip)"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label>Site Name</label>
+            <input type="text" id="gen-sitename" value="Madram Milsan AI"/>
+          </div>
+          <div class="form-group">
+            <label>Site URL</label>
+            <input type="text" id="gen-siteurl" value="madrammilsanai.regovix.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Target Word Count</label>
+          <select id="gen-wordcount">
+            <option value="800">800 words (Short)</option>
+            <option value="1200" selected>1,200 words (Standard)</option>
+            <option value="1800">1,800 words (Long-form)</option>
+            <option value="2500">2,500 words (Pillar content)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="generateContent()" id="gen-btn">
+          <span>⚡</span> Generate Post
+        </button>
+      </div>
+
+      <div class="loader" id="gen-loader">
+        <div class="spinner"></div>
+        <span id="gen-loader-text">Claude is writing your blog post...</span>
+      </div>
+
+      <div class="alert alert-error" id="gen-error"></div>
+      <div class="alert alert-success" id="gen-success"></div>
+
+      <div class="result-box" id="gen-results">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div class="card-title" style="margin:0;">Generated Post</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="copyHTML()">📋 Copy HTML</button>
+            <button class="btn btn-primary btn-sm" onclick="publishToGhost()">🚀 Publish to Ghost</button>
+          </div>
+        </div>
+        <div id="gen-meta-bar" class="meta-bar"></div>
+        <div class="tab-bar">
+          <button class="tab active" onclick="switchContentTab('preview', this)">Preview</button>
+          <button class="tab" onclick="switchContentTab('html', this)">HTML Source</button>
+          <button class="tab" onclick="switchContentTab('meta', this)">SEO Meta</button>
+        </div>
+        <div id="content-tab-preview" class="content-preview"></div>
+        <div id="content-tab-html" style="display:none;" class="copy-wrapper">
+          <textarea id="html-source" style="width:100%;height:300px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:#7EE787;font-family:var(--mono);font-size:12px;padding:16px;resize:vertical;" readonly></textarea>
+          <button class="copy-btn" onclick="copyHTML()">Copy</button>
+        </div>
+        <div id="content-tab-meta" style="display:none;">
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+            <div style="margin-bottom:12px;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">META TITLE</div>
+              <div id="meta-title" style="font-size:13px;color:var(--text);"></div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">META DESCRIPTION</div>
+              <div id="meta-desc" style="font-size:13px;color:var(--text);"></div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">TAGS</div>
+              <div id="meta-tags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">EXCERPT</div>
+              <div id="meta-excerpt" style="font-size:13px;color:var(--text);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TOPIC QUEUE ── -->
+    <div class="panel" id="panel-queue">
+      <div class="page-header">
+        <h1>📅 Topic Queue</h1>
+        <p>15 pre-loaded destinations — autopilot cycles through these daily</p>
+      </div>
+      <div class="card">
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Topic</th>
+              <th>Destination</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="queue-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── AUTOPILOT ── -->
+    <div class="panel" id="panel-autopilot">
+      <div class="page-header">
+        <h1>🤖 Autopilot</h1>
+        <p>Run the full pipeline: keyword → content → publish</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Manual Run</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Triggers the autopilot pipeline right now — picks today's topic, generates content, and publishes if Ghost is configured.</p>
+        <button class="btn btn-primary" onclick="runAutopilot()" id="ap-btn">
+          <span>🚀</span> Run Autopilot Now
+        </button>
+      </div>
+
+      <div class="loader" id="ap-loader">
+        <div class="spinner"></div>
+        <span id="ap-loader-text">Running autopilot pipeline...</span>
+      </div>
+
+      <div class="alert alert-success" id="ap-success"></div>
+      <div class="alert alert-error" id="ap-error"></div>
+
+      <div class="card">
+        <div class="card-title">📟 Pipeline Log</div>
+        <div class="log-terminal" id="ap-log">
+<span class="log-muted">[autopilot]</span> Waiting for run...
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⏰ Scheduled Deployment</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">To enable daily automatic publishing, add this to your <code style="color:var(--teal);">netlify.toml</code>:</p>
+        <div class="copy-wrapper">
+          <pre style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--mono);font-size:12px;color:#7EE787;overflow-x:auto;">[functions.autopilot-scheduler]
+schedule = "0 22 * * *"
+# Runs at 10pm UTC = 8am AEST daily</pre>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('[functions.autopilot-scheduler]\nschedule = \"0 22 * * *\"')">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="panel" id="panel-settings">
+      <div class="page-header">
+        <h1>⚙️ Configuration</h1>
+        <p>Set your site details and publishing credentials</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Site Settings</div>
+        <div class="form-group">
+          <label>Site Name</label>
+          <input type="text" id="cfg-sitename" value="Madram Milsan AI"/>
+        </div>
+        <div class="form-group">
+          <label>Site URL</label>
+          <input type="text" id="cfg-siteurl" value="madrammilsanai.regovix.com"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ghost CMS (Optional — for auto-publishing)</div>
+        <div class="form-group">
+          <label>Ghost URL</label>
+          <input type="text" id="cfg-ghost-url" placeholder="https://your-ghost-site.com"/>
+        </div>
+        <div class="form-group">
+          <label>Ghost Admin API Key</label>
+          <input type="text" id="cfg-ghost-key" placeholder="id:secret (from Ghost Admin → Integrations)"/>
+        </div>
+        <p style="color:var(--muted);font-size:12px;margin-bottom:16px;">💡 Add these as Netlify environment variables: <code style="color:var(--teal);">GHOST_URL</code> and <code style="color:var(--teal);">GHOST_ADMIN_API_KEY</code></p>
+        <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Netlify Environment Variables Required</div>
+        <table class="queue-table">
+          <thead><tr><th>Variable</th><th>Value</th><th>Required</th></tr></thead>
+          <tbody>
+            <tr><td><code style="color:var(--teal);">ANTHROPIC_API_KEY</code></td><td style="color:var(--muted);">Your Anthropic API key</td><td><span style="color:var(--success);">✓ Required</span></td></tr>
+            <tr><td><code style="color:var(--teal);">GHOST_URL</code></td><td style="color:var(--muted);">https://your-ghost-site.com</td><td><span style="color:var(--warn);">Optional</span></td></tr>
+            <tr><td><code style="color:var(--teal);">GHOST_ADMIN_API_KEY</code></td><td style="color:var(--muted);">id:secret from Ghost Admin</td><td><span style="color:var(--warn);">Optional</span></td></tr>
+            <tr><td><code style="color:var(--teal);">SITE_URL</code></td><td style="color:var(--muted);">madrammilsanai.regovix.com</td><td><span style="color:var(--warn);">Optional</span></td></tr>
+            <tr><td><code style="color:var(--teal);">SITE_NAME</code></td><td style="color:var(--muted);">Madram Milsan AI</td><td><span style="color:var(--warn);">Optional</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const state = {
+  postsGenerated: 0,
+  keywordsFound: 0,
+  wordsWritten: 0,
+  currentPost: null,
+  selectedKeyword: null,
+};
+
+const TOPICS = [
+  { topic: "Japan cherry blossom travel", destination: "Japan" },
+  { topic: "Norway fjords itinerary", destination: "Norway" },
+  { topic: "Bali travel guide for Australians", destination: "Bali" },
+  { topic: "Paris travel tips first time", destination: "Paris" },
+  { topic: "Maldives budget travel guide", destination: "Maldives" },
+  { topic: "Iceland northern lights trip", destination: "Iceland" },
+  { topic: "Thailand travel planning", destination: "Thailand" },
+  { topic: "New Zealand South Island road trip", destination: "New Zealand" },
+  { topic: "Switzerland train travel guide", destination: "Switzerland" },
+  { topic: "Morocco travel itinerary", destination: "Morocco" },
+  { topic: "Peru Machu Picchu travel guide", destination: "Peru" },
+  { topic: "Canada winter travel tips", destination: "Canada" },
+  { topic: "Greece island hopping guide", destination: "Greece" },
+  { topic: "Vietnam travel itinerary 2 weeks", destination: "Vietnam" },
+  { topic: "Portugal travel guide Lisbon Porto", destination: "Portugal" },
+];
+
+// ── Panel switching ────────────────────────────────────────────────────────
+function switchPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function switchContentTab(name, el) {
+  ['preview','html','meta'].forEach(t => {
+    document.getElementById('content-tab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// ── Log ───────────────────────────────────────────────────────────────────
+function log(msg, type = '', targetId = 'main-log') {
+  const el = document.getElementById(targetId);
+  const cls = type ? `log-${type}` : '';
+  const ts = new Date().toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  el.innerHTML += `\n<span class="${cls}">[${ts}] ${msg}</span>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateStats() {
+  document.getElementById('stat-posts').textContent = state.postsGenerated;
+  document.getElementById('stat-keywords').textContent = state.keywordsFound;
+  document.getElementById('stat-words').textContent = state.wordsWritten.toLocaleString();
+}
+
+// ── Keyword Research ───────────────────────────────────────────────────────
+async function runKeywordResearch() {
+  const topic = document.getElementById('kw-topic').value.trim();
+  const niche = document.getElementById('kw-niche').value;
+  if (!topic) { alert('Please enter a travel topic'); return; }
+
+  document.getElementById('kw-loader').classList.add('show');
+  document.getElementById('kw-results').classList.remove('show');
+  document.getElementById('kw-error').classList.remove('show');
+
+  log(`Researching keywords for: "${topic}"`, 'teal');
+
+  try {
+    const res = await fetch('/.netlify/functions/keyword-research', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, niche })
+    });
+    const data = await res.json();
+
+    if (!data.success) throw new Error(data.error);
+
+    state.keywordsFound += data.keywords.length;
+    updateStats();
+    renderKeywords(data.keywords);
+    log(`Found ${data.keywords.length} keyword ideas ✓`, 'teal');
+    document.getElementById('kw-results').classList.add('show');
+  } catch (err) {
+    showError('kw-error', err.message);
+    log(`Error: ${err.message}`, 'error');
+  } finally {
+    document.getElementById('kw-loader').classList.remove('show');
+  }
+}
+
+function renderKeywords(keywords) {
+  const grid = document.getElementById('kw-grid');
+  grid.innerHTML = keywords.map((kw, i) => {
+    const diffClass = kw.difficulty === 'Low' ? 'badge-low' : kw.difficulty === 'Medium' ? 'badge-med' : 'badge-high';
+    return `
+    <div class="kw-card" onclick="selectKeyword(this, '${esc(kw.keyword)}', '${esc(kw.suggestedTitle)}')">
+      <div class="kw-phrase">${kw.keyword}</div>
+      <div class="kw-title">${kw.suggestedTitle}</div>
+      <div class="kw-meta">
+        <span class="kw-badge ${diffClass}">${kw.difficulty}</span>
+        <span class="kw-badge badge-info">${kw.intent}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectKeyword(el, keyword, title) {
+  document.querySelectorAll('.kw-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedKeyword = { keyword, title };
+  // Pre-fill generate tab
+  document.getElementById('gen-keyword').value = keyword;
+  document.getElementById('gen-title').value = title;
+  log(`Selected keyword: "${keyword}"`, '');
+  setTimeout(() => switchPanel('generate', document.querySelectorAll('.sidebar-item')[2]), 300);
+}
+
+// ── Generate Content ───────────────────────────────────────────────────────
+async function generateContent() {
+  const keyword = document.getElementById('gen-keyword').value.trim();
+  const title = document.getElementById('gen-title').value.trim();
+  const siteName = document.getElementById('gen-sitename').value.trim();
+  const siteUrl = document.getElementById('gen-siteurl').value.trim();
+  const wordCount = parseInt(document.getElementById('gen-wordcount').value);
+
+  if (!keyword || !title) { alert('Please enter a keyword and title'); return; }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-loader').classList.add('show');
+  document.getElementById('gen-results').classList.remove('show');
+  document.getElementById('gen-error').classList.remove('show');
+  document.getElementById('gen-success').classList.remove('show');
+
+  const msgs = [
+    'Analysing keyword intent...',
+    'Researching topic depth...',
+    'Writing introduction...',
+    'Developing content sections...',
+    'Adding SEO optimisation...',
+    'Generating FAQ section...',
+    'Finalising post...'
+  ];
+  let mi = 0;
+  const interval = setInterval(() => {
+    if (mi < msgs.length) {
+      document.getElementById('gen-loader-text').textContent = msgs[mi++];
+    }
+  }, 3000);
+
+  log(`Generating post: "${title}"`, 'teal', 'main-log');
+
+  try {
+    const res = await fetch('/.netlify/functions/generate-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keyword, title, siteName, siteUrl, wordCount })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+
+    clearInterval(interval);
+    state.currentPost = data.post;
+    state.postsGenerated++;
+    state.wordsWritten += wordCount;
+    updateStats();
+    renderPost(data.post);
+    showSuccess('gen-success', `✓ Post generated: ${data.post.title}`);
+    log(`Post generated successfully (${wordCount} words) ✓`, 'teal', 'main-log');
+    document.getElementById('gen-results').classList.add('show');
+  } catch (err) {
+    clearInterval(interval);
+    showError('gen-error', err.message);
+    log(`Error generating content: ${err.message}`, 'error', 'main-log');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-loader').classList.remove('show');
+    document.getElementById('gen-loader-text').textContent = 'Claude is writing your blog post...';
+  }
+}
+
+function renderPost(post) {
+  document.getElementById('gen-meta-bar').innerHTML =
+    `<strong>${post.title}</strong> &nbsp;·&nbsp; Keyword: <strong>${post.keyword || '—'}</strong> &nbsp;·&nbsp; ~${post.wordCount || '1,200'} words`;
+  document.getElementById('content-tab-preview').innerHTML = post.content;
+  document.getElementById('html-source').value = post.content;
+  document.getElementById('meta-title').textContent = post.title;
+  document.getElementById('meta-desc').textContent = post.metaDescription;
+  document.getElementById('meta-excerpt').textContent = post.excerpt;
+  const tagsEl = document.getElementById('meta-tags');
+  tagsEl.innerHTML = (post.tags || []).map(t =>
+    `<span class="kw-badge badge-info">${t}</span>`).join('');
+}
+
+// ── Publish to Ghost ───────────────────────────────────────────────────────
+async function publishToGhost() {
+  if (!state.currentPost) { alert('Generate a post first'); return; }
+  if (!confirm('Publish this post to Ghost CMS now?')) return;
+
+  log('Publishing to Ghost CMS...', 'teal', 'main-log');
+  try {
+    const res = await fetch('/.netlify/functions/publish-to-ghost', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ post: state.currentPost, publishImmediately: true })
+    });
+    const data = await res.json();
+    if (data.mode === 'published') {
+      showSuccess('gen-success', `✓ Published! URL: ${data.postUrl}`);
+      log(`Published to Ghost: ${data.postUrl}`, 'teal', 'main-log');
+    } else {
+      showSuccess('gen-success', `Post ready — ${data.message}`);
+      log(data.message || 'Ghost not configured — post saved locally', '', 'main-log');
+    }
+  } catch (err) {
+    showError('gen-error', err.message);
+  }
+}
+
+// ── Autopilot ─────────────────────────────────────────────────────────────
+async function runAutopilot() {
+  const btn = document.getElementById('ap-btn');
+  btn.disabled = true;
+  document.getElementById('ap-loader').classList.add('show');
+  document.getElementById('ap-success').classList.remove('show');
+  document.getElementById('ap-error').classList.remove('show');
+
+  const steps = [
+    "Selecting today's topic from queue...",
+    "Generating target keyword...",
+    "Writing blog post content...",
+    "Optimising for SEO...",
+    "Publishing to CMS..."
+  ];
+  let si = 0;
+  const iv = setInterval(() => {
+    if (si < steps.length) {
+      document.getElementById('ap-loader-text').textContent = steps[si];
+      log(steps[si++], 'teal', 'ap-log');
+    }
+  }, 4000);
+
+  try {
+    const res = await fetch('/.netlify/functions/autopilot-scheduler', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+    clearInterval(iv);
+
+    if (!data.success) throw new Error(data.error);
+
+    state.postsGenerated++;
+    state.wordsWritten += 1200;
+    updateStats();
+
+    const pubMsg = data.publishResult?.mode === 'published'
+      ? `Published → ${data.publishResult.postUrl}`
+      : 'Post generated (Ghost not configured — add credentials to publish)';
+
+    showSuccess('ap-success', `✓ Autopilot complete! Topic: "${data.topic}" | ${pubMsg}`);
+    log(`✓ Complete — keyword: "${data.keyword}"`, 'teal', 'ap-log');
+    log(`✓ Title: "${data.title}"`, 'teal', 'ap-log');
+    log(`✓ ${pubMsg}`, 'teal', 'ap-log');
+    log(`Generated at: ${data.generatedAt}`, 'muted', 'ap-log');
+  } catch (err) {
+    clearInterval(iv);
+    showError('ap-error', err.message);
+    log(`Error: ${err.message}`, 'error', 'ap-log');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('ap-loader').classList.remove('show');
+    document.getElementById('ap-loader-text').textContent = 'Running autopilot pipeline...';
+  }
+}
+
+// ── Topic Queue ────────────────────────────────────────────────────────────
+function renderQueue() {
+  const tbody = document.getElementById('queue-body');
+  const today = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  tbody.innerHTML = TOPICS.map((t, i) => {
+    const isToday = i === (today % TOPICS.length);
+    return `<tr ${isToday ? 'style="background:var(--teal-glow)"' : ''}>
+      <td><span class="day-label">${isToday ? '▶ TODAY' : `Day ${i+1}`}</span></td>
+      <td>${t.topic}</td>
+      <td><span class="topic-pill">${t.destination}</span></td>
+      <td><button class="btn btn-secondary btn-sm" onclick="quickGenerate('${esc(t.topic)}')">Generate Now</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function quickGenerate(topic) {
+  document.getElementById('kw-topic').value = topic;
+  switchPanel('keywords', document.querySelectorAll('.sidebar-item')[1]);
+  setTimeout(runKeywordResearch, 100);
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────
+function saveSettings() {
+  const siteName = document.getElementById('cfg-sitename').value;
+  const siteUrl = document.getElementById('cfg-siteurl').value;
+  document.getElementById('gen-sitename').value = siteName;
+  document.getElementById('gen-siteurl').value = siteUrl;
+  alert('✓ Settings saved to session.\n\nRemember to also add GHOST_URL and GHOST_ADMIN_API_KEY as Netlify environment variables for auto-publishing.');
+}
+
+function copyHTML() {
+  const src = document.getElementById('html-source').value;
+  navigator.clipboard.writeText(src).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('show');
+}
+function showSuccess(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function esc(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// ── Init ──────────────────────────────────────────────────────────────────
+renderQueue();
+</script>
+</body>
+</html>

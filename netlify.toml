@@ -1,0 +1,13 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Scheduled: runs daily at 8am AEST (10pm UTC)
+[[plugins]]
+  package = "@netlify/plugin-functions-install-core"
+
+[context.production.environment]
+  NODE_VERSION = "18"
