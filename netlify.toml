@@ -1,13 +1,16 @@
-[build]
+﻿[build]
   publish = "public"
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
+  timeout = 26
 
-# Scheduled: runs daily at 8am AEST (10pm UTC)
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
+[functions.generate-content]
+  timeout = 26
+
+[functions.autopilot-scheduler]
+  timeout = 26
 
 [context.production.environment]
   NODE_VERSION = "18"
