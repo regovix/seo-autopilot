@@ -4,12 +4,14 @@
 
 [functions]
   node_bundler = "esbuild"
-  timeout = 26
 
 [functions.generate-content]
   timeout = 26
 
 [functions.autopilot-scheduler]
+  timeout = 26
+
+[functions.keyword-research]
   timeout = 26
 
 [context.production.environment]
